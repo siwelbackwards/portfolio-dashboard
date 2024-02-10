@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 
 # Load the Excel file
-df = pd.read_excel('https://github.com/siwelbackwards/portfolio-dashboard/blob/main/Stock%20test%20sheet.xlsx')
+df = pd.read_excel('Stock test sheet.xlsx')
 
 # Randomly select N stocks
 N = 10  # Number of stocks to select

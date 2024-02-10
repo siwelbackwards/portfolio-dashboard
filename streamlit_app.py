@@ -8,15 +8,29 @@ import random
 df = pd.read_excel('Stock test sheet.xlsx')
 
 # Randomly select N stocks
-N =   # Number of stocks to select
-selected_stocks = df.sample(n=random.randint(4, 15))
+N = random.randint(4, 15) #random stock numbers chosen
+selected_stocks = df.sample(n=N)
 
 # Prepare data for the pie chart
 industry_counts = selected_stocks['Industry'].value_counts()
 
-# Create a pie chart
+# Define a color palette (shades of blue)
+colors = ['#1f77b4', '#aec7e8', '#ff7f0e', '#ffbb78', '#2ca02c', '#98df8a', '#d62728', '#ff9896', '#9467bd', '#c5b0d5']
+
+# Create a pie chart with McKinsey styling
 fig, ax = plt.subplots()
-ax.pie(industry_counts, labels=industry_counts.index, autopct='%1.1f%%')
+wedges, texts, autotexts = ax.pie(industry_counts, labels=industry_counts.index, autopct='%1.1f%%', colors=colors, startangle=140, textprops={'color':"w"})
+
+# Improve the display of the labels and percentages
+for text in texts:
+    text.set_color('gray')
+for autotext in autotexts:
+    autotext.set_color('white')
+    autotext.set_size('x-large')
+    autotext.set_weight('bold')
+
+# Add a shadow for a 3D effect
+plt.gca().set(aspect="equal", title='Industry Distribution')
 
 # Display the pie chart in Streamlit
 st.pyplot(fig)

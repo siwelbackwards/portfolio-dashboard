@@ -1,5 +1,7 @@
 import streamlit as st
 import pandas as pd
+pip install openpyxl
+
 
 # Load the Excel file
 df = pd.read_excel('Stock test sheet.xlsx')

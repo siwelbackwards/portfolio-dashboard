@@ -1,1 +1,3 @@
-This file is a Uni group project on making a porfoilio managem,nt that managest stocks absed on £10 Million starting portfoilio
+This file is a Uni group project on making a porfoilio management that managest stocks based on £10 Million starting portfoilio.
+
+Website link: https://portfolio-dashboard-uni.streamlit.app/

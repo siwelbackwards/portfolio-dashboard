@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
 
 # Load the Excel file
 df = pd.read_excel('https://github.com/siwelbackwards/portfolio-dashboard/blob/main/Stock%20test%20sheet.xlsx')

@@ -2,13 +2,14 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import random
 
 # Load the Excel file
 df = pd.read_excel('Stock test sheet.xlsx')
 
 # Randomly select N stocks
-N = 10  # Number of stocks to select
-selected_stocks = df.sample(n=10)
+N =   # Number of stocks to select
+selected_stocks = df.sample(n=random.randint(4, 15))
 
 # Prepare data for the pie chart
 industry_counts = selected_stocks['Industry'].value_counts()

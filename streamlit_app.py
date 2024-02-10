@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Load the Excel file
-df = pd.read_excel(r'C:\Users\Lewis\Desktop\Stock test sheet.xlsx')
+df = pd.read_excel('https://github.com/siwelbackwards/portfolio-dashboard/blob/main/Stock%20test%20sheet.xlsx')
 
 # Randomly select N stocks
 N = 10  # Number of stocks to select

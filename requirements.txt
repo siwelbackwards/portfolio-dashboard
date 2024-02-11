@@ -4,4 +4,3 @@ numpy
 matplotlib
 plotly
 altair
-plotly.graph_objects

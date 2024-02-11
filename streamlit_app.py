@@ -15,7 +15,6 @@ st.set_page_config(
 
 alt.themes.enable("dark")
 
-
 #######################
 # Sidebar
 with st.sidebar:
@@ -149,3 +148,23 @@ fig.update_layout(
 st.plotly_chart(fig, use_container_width=True)
 
 st.write('This line chart simulates the growth of a portfolio starting with 10 million pounds, with a random monthly growth multiplier between 0.95 and 1.1 over the next 10 years.')
+
+#contact form
+st.header(":mailbox: Get In Touch for Help!")
+contact_form = """
+<form action="https://formsubmit.co/pmyld12@nottingham.ac.uk" method="POST">
+     <input type="hidden" name="_captcha" value="false">
+     <input type="text" name="name" placeholder="Your name" required>
+     <input type="email" name="email" placeholder="Your email" required>
+     <textarea name="message" placeholder="Your message here"></textarea>
+     <button type="submit">Send</button>
+</form>
+"""
+st.markdown(contact_form, unsafe_allow_html=True)
+
+# Use Local CSS File
+def local_css(file_name):
+    with open(file_name) as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+local_css("style.css")

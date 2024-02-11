@@ -5,3 +5,4 @@ matplotlib
 plotly
 altair
 random
+plotly.graph_objects

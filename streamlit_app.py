@@ -93,11 +93,11 @@ dates = pd.date_range(start=pd.Timestamp.now(), periods=months, freq='M')
 
 # Determine growth multipliers based on risk selection
 if selected_risk == 'Low':
-    multipliers = np.random.uniform(0.98, 1.05, size=months)
+    multipliers = np.random.uniform(0.98**(1/12), 1.05**(1/12), size=months)
 elif selected_risk == 'Medium':
-    multipliers = np.random.uniform(0.95, 1.1, size=months)
+    multipliers = np.random.uniform(0.95**(1/12), 1.1**(1/12), size=months)
 else:  # Assuming 'High' risk
-    multipliers = np.random.uniform(0.8, 1.3, size=months)
+    multipliers = np.random.uniform(0.8**(1/12), 1.3**(1/12), size=months)
 
 # Simulate monthly growth
 values = [initial_value]

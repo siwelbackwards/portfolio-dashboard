@@ -3,6 +3,8 @@ import pandas as pd
 from pandas_datareader import data as pdr
 from datetime import datetime
 
+
+#DATA COLLECTION
 yf.pdr_override()
 # list of tickers
 NYSE100tickers = [
@@ -134,7 +136,7 @@ india_unemployment = pd.read_csv(r"C:\Users\Lewis\Downloads\india-unemployment-r
 saudi_unemployment = pd.read_csv(r"C:\Users\Lewis\Downloads\statistic_id262524_unemployment-rate-in-saudi-arabia-in-2022.csv")
 saudi_interest = pd.read_csv(r"C:\Users\Lewis\Downloads\estimated_interest_rates.csv")
 
-
+#ALGORITHM
 def evaluate_economic_indicators(usa_gdp, usa_cpi, usa_unemployment, usa_interest, usa_oil):
     """
     Evaluates economic indicators to categorize the economic environment.
@@ -180,21 +182,7 @@ def evaluate_economic_indicators(usa_gdp, usa_cpi, usa_unemployment, usa_interes
     
     return results
 
-
-import pandas as pd
-import numpy as np
-
 def moving_average(data, period):
-    """
-    Calculate the moving average for the given data.
-    
-    Parameters:
-    - data: Pandas Series of stock prices.
-    - period: Integer, the period over which to calculate the moving average.
-    
-    Returns:
-    - Pandas Series with the moving average of the specified period.
-    """
     return data.rolling(window=period).mean()
 
 def analyze_stock_market(tickers_data):

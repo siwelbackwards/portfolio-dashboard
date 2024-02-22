@@ -3,10 +3,17 @@ import pandas as pd
 from pandas_datareader import data as pdr
 from datetime import datetime, timedelta
 import numpy as np
-#DATA COLLECTION
+import time
+from pytrends.request import TrendReq
+#DATA COLLECTION AND MERGING
 #################################
 yf.pdr_override()
-# list of tickers
+
+#Defining period of time
+start = '2014-01-01'
+end = '2024-01-01'
+
+#List of tickers
 NYSE100tickers = [
     "MMM", "ABT", "ACN", "AIG", "MO", "T", "BAC", "BK", "BAX", "BRK-B", "BA", "BMY", 
     "CAT", "C", "KO", "CL", "GLW", "DHR", "DE", "DVN", "D", "DUK", "DD", "LLY", 
@@ -63,8 +70,8 @@ SSE50tickers = [
     "603501.SS", "603799.SS", "603986.SS", "688111.SS", "688599.SS"
 ]
 
-#macro economic factors
-usa_gdp = pdr.get_data_fred("FYGDP", start, end) # Usa Gross Domestic Product in billions
+#Macro economic factors being recived
+usa_gdp = pdr.get_data_fred("GDP", start, end) # Usa Gross Domestic Product in billions
 usa_cpi = pdr.get_data_fred("CPIAUCSL", start, end) #Consumer Price Index for All Urban Consumers: All Items in U.S. City Average
 usa_unemployment = pdr.get_data_fred('UNRATE', start, end) #Usa Unemployment rate
 usa_pop = pdr.get_data_fred('CNP16OV', start, end) #Usa Population Level in 1000s
@@ -105,6 +112,48 @@ india_unemployment = pd.read_csv(r"C:\Users\Lewis\Downloads\india-unemployment-r
 saudi_unemployment = pd.read_csv(r"C:\Users\Lewis\Downloads\statistic_id262524_unemployment-rate-in-saudi-arabia-in-2022.csv")
 saudi_interest = pd.read_csv(r"C:\Users\Lewis\Downloads\estimated_interest_rates.csv")
 
+#Create a new date range that includes all days in the period
+daily_index = pd.date_range(start=start, end=end, freq='D')
+
+#Interpolating economic data so in daily format like stocks (currently using linear interpolation but may look to change that)
+usa_gdp = usa_gdp.reindex(daily_index).interpolate(method='linear')
+usa_cpi = usa_cpi.reindex(daily_index).interpolate(method='linear')
+usa_unemployment = usa_unemployment.reindex(daily_index).interpolate(method='linear')
+usa_pop = usa_pop.reindex(daily_index).interpolate(method='linear')
+usa_interest = usa_interest.reindex(daily_index).interpolate(method='linear')
+usa_oil = usa_oil.reindex(daily_index).interpolate(method='linear')
+asia_lng = asia_lng.reindex(daily_index).interpolate(method='linear')
+china_gdp = china_gdp.reindex(daily_index).interpolate(method='linear')
+china_cpi = china_cpi.reindex(daily_index).interpolate(method='linear')
+china_unemployment = china_unemployment.reindex(daily_index).interpolate(method='linear')
+china_pop = china_pop.reindex(daily_index).interpolate(method='linear')
+china_interest = china_interest.reindex(daily_index).interpolate(method='linear')
+japan_gdp = japan_gdp.reindex(daily_index).interpolate(method='linear')
+japan_cpi = japan_cpi.reindex(daily_index).interpolate(method='linear')
+japan_unemployment = japan_unemployment.reindex(daily_index).interpolate(method='linear')
+japan_pop = japan_pop.reindex(daily_index).interpolate(method='linear')
+japan_interest = japan_interest.reindex(daily_index).interpolate(method='linear')
+india_gdp = india_gdp.reindex(daily_index).interpolate(method='linear')
+india_cpi = india_cpi.reindex(daily_index).interpolate(method='linear')
+india_pop = india_pop.reindex(daily_index).interpolate(method='linear')
+india_interest = india_interest.reindex(daily_index).interpolate(method='linear')
+uk_oil = uk_oil.reindex(daily_index).interpolate(method='linear')
+uk_gdp = uk_gdp.reindex(daily_index).interpolate(method='linear')
+uk_cpi = uk_cpi.reindex(daily_index).interpolate(method='linear')
+uk_unemployment = uk_unemployment.reindex(daily_index).interpolate(method='linear')
+uk_pop = uk_pop.reindex(daily_index).interpolate(method='linear')
+uk_interest = uk_interest.reindex(daily_index).interpolate(method='linear')
+saudi_gdp = saudi_gdp.reindex(daily_index).interpolate(method='linear')
+saudi_cpi = saudi_cpi.reindex(daily_index).interpolate(method='linear')
+saudi_pop = saudi_pop.reindex(daily_index).interpolate(method='linear')
+eu_oil = eu_oil.reindex(daily_index).interpolate(method='linear')
+eu_cpi = eu_cpi.reindex(daily_index).interpolate(method='linear')
+eu_interest = eu_interest.reindex(daily_index).interpolate(method='linear')
+eu_unemployment = eu_unemployment.reindex(daily_index).interpolate(method='linear')
+eu_population = eu_population.reindex(daily_index).interpolate(method='linear')
+eu_gdp = eu_gdp.reindex(daily_index).interpolate(method='linear')
+
+#country and corresponding stock exchange (need to add the other stock exchange that the model will be trained on)
 def country_exchange(country):
     if country == "USA":
         return NYSE100tickers
@@ -123,14 +172,15 @@ def country_exchange(country):
     else:
         return None 
 
+#country economic factors
 country_macros = {
     "USA": {"GDP": usa_gdp, "CPI": usa_cpi, "Unemployment": usa_unemployment, "Population": usa_pop, "Interest": usa_interest, "Oil": usa_oil},
     "China": {"GDP": china_gdp, "CPI": china_cpi, "Unemployment": china_unemployment, "Population": china_pop, "Interest": china_interest, "Oil": asia_lng},
-    "Japan": {"GDP": japan_gdp, "CPI": japan_cpi, "Unemployment": japan_unemployment, "Population": japan_pop, "Interest": japan_interest, "Oil": None},
+    "Japan": {"GDP": japan_gdp, "CPI": japan_cpi, "Unemployment": japan_unemployment, "Population": japan_pop, "Interest": japan_interest, "Oil": asia_lng},
     "UK": {"GDP": uk_gdp, "CPI": uk_cpi, "Unemployment": uk_unemployment, "Population": uk_pop, "Interest": uk_interest, "Oil": uk_oil},
-    "Saudi": {"GDP": saudi_gdp, "CPI": saudi_cpi, "Unemployment": None, "Population": saudi_pop, "Interest": saudi_interest, "Oil": saudi_oil},
+    "Saudi": {"GDP": saudi_gdp, "CPI": saudi_cpi, "Unemployment": saudi_unemployment, "Population": saudi_pop, "Interest": saudi_interest, "Oil": saudi_oil},
     "EU": {"GDP": eu_gdp, "CPI": eu_cpi, "Unemployment": eu_unemployment, "Population": eu_population, "Interest": eu_interest, "Oil": eu_oil},
-    "India": {"GDP": india_gdp, "CPI": india_cpi, "Unemployment": None, "Population": india_pop, "Interest": india_interest, "Oil": asia_lng}
+    "India": {"GDP": india_gdp, "CPI": india_cpi, "Unemployment": india_unemployment, "Population": india_pop, "Interest": india_interest, "Oil": asia_lng}
 }
 
 def macro_trends(country_data): #macro_trends(country_macros["USA"]) - example how to call
@@ -141,123 +191,198 @@ def macro_trends(country_data): #macro_trends(country_macros["USA"]) - example h
     interest = country_data["Interest"]
     energy = country_data["Oil"]
 
+#Setting Google trends data for US and time period ect...
+pytrends = TrendReq(hl='en-US', tz=360)
+timeframe = '2014-01-01 2024-01-01'
+geo = 'US'
+
+# Dictionary to store Google Trends data for each ticker
+trends_data = {}
+
+# For loop to gather all Google Trends data
+for ticker in NYSE100tickers:
+    pytrends.build_payload([ticker], timeframe=timeframe, geo=geo)
+    # Fetch the interest over time and remove 'isPartial' column
+    df = pytrends.interest_over_time().drop(columns=['isPartial'], errors='ignore')
+    # Store the DataFrame in the dictionary
+    trends_data[ticker] = df
+    # Sleep to avoid hitting rate limits when fetching data from google
+    time.sleep(1)
+
+# Function to retrieve individual stock data
+def get_stock_data(ticker, start_date, end_date):
+    stock_data = yf.download(ticker, start=start_date, end=end_date)
+    return stock_data['Close']  # Gathers closing
+
+# Initialize the dictionary again for clarity
+stock_data_frames = {}
+
+# Adding sector data
+ticker_to_sector = {}  # Dictionary to hold mapping of tickers to sectors
+
+for ticker in NYSE100tickers:
+    stock_info = yf.Ticker(ticker)
+    sector = stock_info.info['sector']
+    ticker_to_sector[ticker] = sector
+
+
+
+# Algorithm to fetch stock data and merge with all economic indicators for all tickers
+for tick in NYSE100tickers:
+    # Fetch stock data
+    stock_data = get_stock_data(tick, start, end)
+    # Merge with Economic factors
+    merged_data = pd.merge(stock_data.to_frame(name='Close'), usa_gdp, left_index=True, right_index=True, how='left')
+    merged_data = pd.merge(merged_data, usa_cpi, left_index=True, right_index=True, how='left', suffixes=('', '_cpi'))
+    merged_data = pd.merge(merged_data, usa_unemployment, left_index=True, right_index=True, how='left', suffixes=('', '_unemployment'))
+    merged_data = pd.merge(merged_data, usa_pop, left_index=True, right_index=True, how='left', suffixes=('', '_pop'))
+    merged_data = pd.merge(merged_data, usa_interest, left_index=True, right_index=True, how='left', suffixes=('', '_interest'))
+    merged_data = pd.merge(merged_data, usa_oil, left_index=True, right_index=True, how='left', suffixes=('', '_oil'))
+    #merged_data = pd.merge(merged_data, sector, left_index=True, right_index=True, how='left', suffixes=('', '_sector'))
+    
+    # Merge with Google Trends data
+    if tick in trends_data:
+        google_trends_data = trends_data[tick]
+        # Ensure the Google Trends data index is a datetime index
+        google_trends_data.index = pd.to_datetime(google_trends_data.index)
+        
+        # Merge Google Trends data (google data currently not working could be issue from hitting rate limits when fetching data from google)
+        merged_data = pd.merge(merged_data, google_trends_data, left_index=True, right_index=True, how='left', suffixes=('', f'_{tick}_trend'))
+    
+    # Store the merged DataFrame
+    stock_data_frames[tick] = merged_data
 
     
-#ALGORITHM - intialises portfoilio
-###################################################################
-import yfinance as yf
-import pandas as pd
+# Merging with stock data
+for tick in NYSE100tickers:
+    if tick in stock_data_frames:
+        stock_data_frames[tick]['Sector'] = ticker_to_sector[tick]
+
+
+# Define the list of industries
+industries = ['Industrials', 'Healthcare', 'Technology', 'Financial Services',
+              'Consumer Defensive', 'Communication Services', 'Energy', 'Utilities',
+              'Basic Materials', 'Consumer Cyclical', 'Real Estate']
+
+# Create a NumPy array from the covariance matrix
+V = np.array([[ 6.132e+03,  3.080e+02,  2.600e+01, -1.250e+02,  1.270e+02,
+        -1.150e+02,  4.130e+02,  4.000e+01, -1.460e+02, -4.200e+01,
+        -5.180e+02],
+       [ 3.080e+02,  5.845e+03,  3.000e+00,  2.560e+02, -5.500e+01,
+         3.330e+02, -2.770e+02, -2.440e+02,  2.850e+02, -3.340e+02,
+        -7.080e+02],
+       [ 2.600e+01,  3.000e+00,  5.758e+03,  3.900e+01, -1.830e+02,
+        -2.300e+02, -2.540e+02,  8.000e+01,  1.840e+02,  4.070e+02,
+         1.890e+02],
+       [-1.250e+02,  2.560e+02,  3.900e+01,  6.278e+03, -4.490e+02,
+         5.200e+01, -4.980e+02, -4.790e+02, -2.660e+02, -2.430e+02,
+         4.100e+01],
+       [ 1.270e+02, -5.500e+01, -1.830e+02, -4.490e+02,  5.877e+03,
+        -2.560e+02,  3.960e+02, -1.100e+01,  3.100e+01, -3.180e+02,
+         8.500e+01],
+       [-1.150e+02,  3.330e+02, -2.300e+02,  5.200e+01, -2.560e+02,
+         5.920e+03, -2.330e+02, -1.540e+02,  6.900e+01,  5.600e+01,
+        -5.090e+02],
+       [ 4.130e+02, -2.770e+02, -2.540e+02, -4.980e+02,  3.960e+02,
+        -2.330e+02,  6.316e+03,  7.450e+02, -1.060e+02, -2.980e+02,
+        -2.110e+02],
+       [ 4.000e+01, -2.440e+02,  8.000e+01, -4.790e+02, -1.100e+01,
+        -1.540e+02,  7.450e+02,  5.853e+03, -1.190e+02,  7.000e+00,
+        -5.300e+01],
+       [-1.460e+02,  2.850e+02,  1.840e+02, -2.660e+02,  3.100e+01,
+         6.900e+01, -1.060e+02, -1.190e+02,  5.717e+03, -4.400e+01,
+        -1.680e+02],
+       [-4.200e+01, -3.340e+02,  4.070e+02, -2.430e+02, -3.180e+02,
+         5.600e+01, -2.980e+02,  7.000e+00, -4.400e+01,  5.981e+03,
+         3.070e+02],
+       [-5.180e+02, -7.080e+02,  1.890e+02,  4.100e+01,  8.500e+01,
+        -5.090e+02, -2.110e+02, -5.300e+01, -1.680e+02,  3.070e+02,
+         6.035e+03]])
+inv_V=np.linalg.inv(V)
+
+#edit r CHANGE LATER DATE
+random_numbers = np.random.rand(11, 1) * 0.1
+r = random_numbers + 1
+
+# Assuming inv_V is defined elsewhere and is an 11x11 matrix
+alpha = np.dot(np.ones((1,11)), np.dot(inv_V, np.ones((11, 1))))
+beta = np.dot(np.ones((1, 11)), np.dot(inv_V, r))
+gamma = np.dot(r.T, np.dot(inv_V, r))
+delta = alpha*beta - gamma**2
+mu=1.05 #expected return of portfoilio
+
+# Calculate lambda values
+lambda_1 = (gamma - beta * mu) / delta
+lambda_2 = (alpha * mu - beta) / delta
+
+# Calculate the efficient portfolio
+efficient_portfolio = lambda_1 * np.dot(inv_V, np.ones((11, 1))) + lambda_2 * np.dot(inv_V, r)
+
+# Normalize the weights to ensure they sum up to 1
+efficient_portfolio_weights = efficient_portfolio / np.sum(efficient_portfolio)
+
+#TIMESERIES ALGORITHM MONTE CARLO
+####################
 import numpy as np
-from datetime import datetime, timedelta
+import pandas as pd
+import matplotlib.pyplot as plt
 
-# Initialize yfinance
-yf.pdr_override()
+num_simulations = 1000
+num_days = 252
 
-# Function to fetch historical data for a list of tickers
-def fetch_data(tickers, start_date, end_date):
-    stock_data = {}
-    for ticker in tickers:
-        try:
-            stock = yf.Ticker(ticker)
-            hist = stock.history(start=start_date, end=end_date)
-            stock_data[ticker] = hist['Close']
-        except Exception as e:
-            print(f"Error fetching data for {ticker}: {e}")
-    return pd.DataFrame(stock_data)
+# Placeholder for simulation results
+simulation_results = {}
 
-# Function to fetch current prices for a list of tickers
-def fetch_current_prices(tickers):
-    current_prices = {}
-    for ticker in tickers:
-        try:
-            stock = yf.Ticker(ticker)
-            hist = stock.history(period="1d")
-            current_prices[ticker] = hist['Close'].iloc[0]
-        except Exception as e:
-            print(f"Error fetching current price for {ticker}: {e}")
-    return current_prices
-
-# Function to calculate shares to buy given a budget and current prices
-def calculate_shares(budget, prices):
-    shares = {ticker: budget / price for ticker, price in prices.items()}
-    return shares
-
-# Consolidate all tickers into one list for the analysis
-all_tickers = NYSE100tickers + EURONEXT100tickers + TASItickers + SSE50tickers
-
-# Define the investment period for historical analysis
-start_date = '2019-01-01'
-end_date = '2024-01-01'
-historical_data = fetch_data(all_tickers, start_date, end_date)
-
-# Calculate returns and volatility for each stock
-returns = historical_data.pct_change().mean() * 252
-volatility = historical_data.pct_change().std() * np.sqrt(252)
-
-# Combine returns and volatility into a DataFrame
-performance = pd.DataFrame({'Returns': returns, 'Volatility': volatility})
-
-# Select stocks based on a strategy, e.g., highest returns to volatility ratio
-selected_stocks = (performance['Returns'] / performance['Volatility']).nlargest(10).index.tolist()
-
-# Define initial budget and fetch current prices for the selected stocks
-initial_budget = 10_000_000  # £10 million
-current_prices = fetch_current_prices(selected_stocks)
-allocated_budget_per_stock = initial_budget / len(selected_stocks)
-
-# Calculate how many shares to buy for each selected stock
-shares_to_buy = calculate_shares(allocated_budget_per_stock, current_prices)
-
-# Display the calculated shares to buy
-for stock, num_shares in shares_to_buy.items():
-    print(f"Buy {num_shares:.2f} shares of {stock}")
-
-#ALGORITHM - that updates portfolio
-##################
-def evaluate_macro_trend(indicators):
-    trends = []
-    for key, indicator_data in indicators.items():
-        if isinstance(indicator_data, pd.DataFrame) or isinstance(indicator_data, pd.Series):
-            if len(indicator_data) >= 2:
-                last_value = indicator_data.iloc[-1]
-                second_last_value = indicator_data.iloc[-2]
-                if isinstance(last_value, pd.Series):
-                    last_value = last_value.values[0]
-                if isinstance(second_last_value, pd.Series):
-                    second_last_value = second_last_value.values[0]
-                trend = last_value > second_last_value
-                trends.append(trend)
-    return trends.count(True) > len(trends) / 2 if trends else False
-
-def decide_action(stock_data, macro_trend):
-    stock_trend_up = stock_data.iloc[-1] > stock_data.iloc[-2]  #Compares to last closing price to the price 2 days ago
-    if stock_trend_up and macro_trend:
-        return "BUY"
-    elif not stock_trend_up and not macro_trend:
-        return "SELL"
-    else:
-        return "HOLD"
-
-def analyze_stocks_for_country(country):
-    tickers = country_exchange(country)
-    if not tickers:
-        print(f"No tickers found for {country}.")
-        return
-    macro_indicators = country_macros.get(country, {})
-    macro_trend = evaluate_macro_trend(macro_indicators)
-
-    actions = {}
-    for ticker in tickers:
-        try:
-            stock_data = pdr.get_data_yahoo(ticker, start=datetime.now() - timedelta(days=365), end=datetime.now())['Close']
-            action = decide_action(stock_data, macro_trend)
-            actions[ticker] = action
-        except Exception as e:
-            print(f"Error processing {ticker}: {e}")
+# Iterate over each stock in your DataFrame
+for ticker in stock_data_frames.keys():
+    # Extract the 'Close' prices for the current ticker
+    close_prices = stock_data_frames[ticker]['Close']
     
-    return actions
+    # Calculate necessary statistics
+    last_price = close_prices[-1]
+    returns = close_prices.pct_change()
+    mean_daily_return = returns.mean()
+    variance_daily_return = returns.var()
+    drift = mean_daily_return - (0.5 * variance_daily_return)
+    volatility = returns.std()
+    
+    # Prepare a list to collect all simulations
+    all_simulations = []
+    
+    # Run simulations
+    for x in range(num_simulations):
+        price_series = [last_price]
+        
+        for y in range(num_days):
+            price = price_series[-1] * np.exp(drift + volatility * np.random.normal())
+            price_series.append(price)
+        
+        # Add the completed simulation to the list
+        all_simulations.append(price_series)
 
-def buy_sell_option(country):
-    actions = analyze_stocks_for_country(country)
-    for ticker, action in actions.items():
-        print(f"{ticker}: {action}")
+    # Convert the list of simulations into a DataFrame all at once
+    simulation_df = pd.DataFrame(all_simulations).transpose()
+
+    # Store the simulation results
+    simulation_results[ticker] = simulation_df
+
+# Placeholder for expected returns
+expected_returns = {}
+
+# Analyze simulation results and calculate expected returns
+for ticker, simulation_df in simulation_results.items():
+    # Calculate the mean of the final day's prices across all simulations
+    expected_future_price = simulation_df.iloc[-1].mean()
+    last_price = stock_data_frames[ticker]['Close'].iloc[-1]
+    expected_return = (expected_future_price - last_price) / last_price
+    expected_returns[ticker] = expected_return
+
+# Select the best stock per industry based on expected returns
+best_stocks_per_industry = {}
+for industry in industries:
+    industry_stocks = {ticker: expected_returns[ticker] for ticker, sector in ticker_to_sector.items() if sector == industry}
+    if industry_stocks:  # Check if there are stocks in this industry
+        best_stock = max(industry_stocks, key=industry_stocks.get)
+        best_stocks_per_industry[industry] = best_stock
+
+print(best_stocks_per_industry)

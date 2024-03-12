@@ -1,11 +1,6 @@
-streamlit
-pandas
-numpy
-matplotlib
-plotly
-altair
-openpyxl
-yfinance
-pandas_datareader
-pytrends
-scipy.stats
+dash==2.6.1
+pandas==1.4.3
+numpy==1.23.1
+yfinance==0.1.74
+plotly==5.10.0
+matplotlib==3.5.2

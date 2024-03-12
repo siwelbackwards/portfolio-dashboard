@@ -1,8 +1,48 @@
+import urllib.request
+import subprocess
+import os
+import sys
+
+# Function to check if a package is installed, and install it if it isn't
+def check_and_install_package(package_name):
+    try:
+        __import__(package_name)
+        print(f"{package_name} is already installed.")
+    except ModuleNotFoundError:
+        print(f"{package_name} not found, installing now.")
+        subprocess.check_call([sys.executable, '-m', 'pip', 'install', package_name])
+
+# URL of the requirements.txt file on GitHub
+requirements_url = 'https://github.com/siwelbackwards/portfolio-dashboard/raw/main/requirements.txt'
+
+# Path to save the requirements file temporarily
+requirements_path = 'requirements.txt'
+
+# Function to download the file from the internet
+def download_file(url, save_path):
+    with urllib.request.urlopen(url) as response, open(save_path, 'wb') as out_file:
+        data = response.read()  # a `bytes` object
+        out_file.write(data)
+
+# Download requirements.txt
+download_file(requirements_url, requirements_path)
+
+# Read the requirements file and check each package
+with open(requirements_path, 'r') as f:
+    packages = f.readlines()
+    for package in packages:
+        package_name = package.split('==')[0]  # Assumes package format is package==version
+        check_and_install_package(package_name)
+
+# Delete the temporary requirements.txt file
+os.remove(requirements_path)
+
 from dash import Dash, html, dcc, Input, Output, State, dash_table
 import numpy.linalg as linalg
 import yfinance as yf
 import pandas as pd
 import numpy as np
+import webbrowser
 from datetime import datetime, timedelta
 import plotly.graph_objs as go
 import matplotlib.pyplot as plt
@@ -412,7 +452,6 @@ def plot_portfolio_projections(simulation):
     plt.title("Portfolio Performance Projection")
     plt.xlabel("Days")
     plt.ylabel("Portfolio Value")
-    plt.show()
 
 # Plot NYSE Portfolio Projection
 plot_portfolio_projections(nyse_simulation)
@@ -934,4 +973,6 @@ app.clientside_callback(
 )
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app_url = 'http://127.0.0.1:8050/'
+    webbrowser.open(app_url)
+    app.run_server(debug=False)

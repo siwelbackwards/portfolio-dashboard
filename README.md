@@ -12,3 +12,6 @@ The primary goal is to design, implement, and test a prototype system for portfo
 - Creating an algorithm for regular portfolio adjustments based on market changes.
 - Utilizing financial, statistical, and computational techniques to analyze data and optimize portfolio performance.
 
+## Instructions
+
+To run simply download the app.py file and run in your IDLE and the dashboard web browser will pop up once the data is downloaded and processed

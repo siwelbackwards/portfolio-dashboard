@@ -1,26 +1,188 @@
-/* Style inputs with type="text", type="email"and textareas */
-input[type=text], input[type=email], textarea {
-  width: 100%; /* Full width */
-  padding: 12px; /* Some padding */ 
-  border: 1px solid #ccc; /* Gray border */
-  border-radius: 4px; /* Rounded borders */
-  box-sizing: border-box; /* Make sure that padding and width stays in place */
-  margin-top: 6px; /* Add a top margin */
-  margin-bottom: 16px; /* Bottom margin */
-  resize: vertical /* Allow the user to vertically resize the textarea (not horizontally) */
+@font-face {
+    font-family: 'BowerBold';
+    src: url('Bower-Bold.ttf') format('truetype');
 }
 
-/* Style the submit button with a specific background color etc */
-button[type=submit] {
-  background-color: #04AA6D;
-  color: white;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+body {
+    font-family: 'BowerBold', sans-serif;
+    color: #333;
+    background-color: #f0f0f0;
+    line-height: 1.6;
 }
 
-/* When moving the mouse over the submit button, add a darker green color */
-button[type=submit]:hover {
-  background-color: #45a049;
+h2, h4 {
+    color: #000000;
+}
+
+.sidebar {
+    width: 20%;
+    background-color: #051c2c;
+    color: #ffffff;
+    height: 100vh;
+    padding: 10px;
+}
+
+.page-content {
+    width: 80%;
+    padding: 20px;
+}
+
+.DataTable, .Graph {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+/* Enhancements for dash DataTable */
+.DataTable {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 20px 0; /* Add space around tables */
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1); /* Soft shadow around the table */
+    border-radius: 5px; /* Rounded corners for the table */
+    overflow: hidden; /* Ensures the rounded corners clip the content */
+}
+
+/* Additional styling for DataTable headers */
+.DataTable th {
+    background-color: #053259; /* McKinsey-like blue for headers */
+    color: #FFFFFF; /* White text for contrast */
+    font-family: 'BowerBold', sans-serif; /* Custom font */
+    padding: 15px; /* More padding for header cells */
+    text-align: left; /* Align header text to left */
+}
+
+/* Styling for DataTable cells */
+.DataTable td {
+    font-family: 'BowerBold', sans-serif; /* Ensure the custom font is applied */
+    padding: 15px; /* Padding inside cells for spacing */
+    border-bottom: 1px solid #dddddd; /* Light border for separating rows */
+}
+
+/* Hover effect for rows */
+.DataTable tr:hover {
+    background-color: #f5f5f5; /* Light grey background on row hover */
+}
+
+/* Zebra striping effect for rows */
+.DataTable tr:nth-child(odd) {
+    background-color: #f9f9f9;
+}
+
+
+.Selector {
+    margin: 10px 0;
+}
+
+.Select-control, .Select-value, .Select-placeholder, .Select-option {
+    color: #000000;
+}
+
+.Select-arrow-zone {
+    color: #000000;
+}
+
+.footer {
+    font-size: 12px;
+    color: #777;
+    text-align: center;
+    margin-top: 20px;
+}
+
+button, .button {
+    background-color: #053259;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+button:hover, .button:hover {
+    background-color: white;
+    color: #053259;
+    border: 1px solid #053259;
+}
+
+/* New Styles for Enhanced Table and Graph Aesthetics */
+.dash-table th {
+    background-color: #004785; /* A darker shade for header */
+    color: #FFFFFF;
+    font-weight: normal; /* To align with McKinsey's minimalistic style */
+}
+
+.dash-table td {
+    font-size: 14px; /* Slightly smaller font for content for better readability */
+    color: #333333; /* Ensuring text is easily readable */
+}
+
+.graph-title {
+    font-size: 18px; /* Appropriate sizing for graph titles */
+    margin-bottom: 15px; /* Spacing below the title */
+    color: #053259; /* McKinsey-like blue for emphasis */
+}
+
+/* Additional styles for Plotly Graphs */
+.Graph .plotly-graph-div {
+    background-color: #f0f0f0; /* Light background to ensure graphs stand out */
+    border: 1px solid #ddd; /* Subtle border around graphs */
+    border-radius: 5px; /* Rounded corners for the graph containers */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Soft shadow for depth */
+}
+
+.Graph .legend {
+    font-size: 14px; /* Adjust legend font size for clarity */
+}
+
+# Countdown Timer
+html.Div([
+    html.Div(
+        id='countdown-timer-display',
+        style={
+            'border': '2px solid #053259',  # Blue border
+            'color': '#ffffff',             # White text color
+            'padding': '10px',              # Padding inside the div
+            'border-radius': '5px',         # Rounded corners
+            'background-color': '#053259',  # Blue background color
+            'font-size': '20px',            # Larger font size
+            'font-weight': 'bold'           # Bold font
+        }
+    )
+], style={
+    'flex': '1',
+    'margin': '10px',
+    'text-align': 'center',
+    'justify-content': 'center',          # Center child div
+    'display': 'flex',                    # Flex display to center content
+    'align-items': 'center'               # Align items vertically
+})
+
+.form-group {
+    margin-bottom: 15px; /* Space between form elements */
+}
+
+.form-group label {
+    display: block;      /* Make labels display as block elements */
+    margin-bottom: 5px;  /* Space between label and input */
+}
+
+.contact-form input[type='text'],
+.contact-form input[type='email'],
+.contact-form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.submit-button {
+    text-align: center;  /* Center the button horizontally */
+}
+
+.help-contact-section {
+    margin-top: 40px;    /* Space between help text and contact form */
+    border: 1px solid #ccc;  /* Add a border for visual separation */
+    padding: 20px;
+    border-radius: 8px;
 }

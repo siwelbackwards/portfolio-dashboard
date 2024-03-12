@@ -1,6 +1,6 @@
 @font-face {
     font-family: 'BowerBold';
-    src: url('Bower-Bold.ttf') format('truetype');
+    src: url('https://github.com/siwelbackwards/portfolio-dashboard/raw/main/Bower-Bold.ttf') format('truetype');
 }
 
 body {
